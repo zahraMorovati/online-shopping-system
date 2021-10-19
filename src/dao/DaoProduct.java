@@ -35,13 +35,13 @@ public class DaoProduct extends Dao{
                 "    PRIMARY KEY (id))");
     }
 
-    public int save(Product p) throws SQLException {
+   public int save(Product p) throws SQLException {
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
             String sqlQuery = String.format("INSERT INTO good" +
                             " (name,group,type,price,count) " +
                             "VALUES ('%s','%s','%s','%f','%d')",
-                    p.getName(),p.getProductGroup().toString(),p.getProductType().toString(),
+                     p.getName(),p.getProductGroup().toString(),p.getProductType().toString(),
                     p.getPrice(),p.getCount());
             int i = statement.executeUpdate(sqlQuery);
             return i;
