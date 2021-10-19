@@ -72,4 +72,14 @@ public class Cart {
     public void setGoodList(List<Product> productList) {
         this.productList = productList;
     }
+
+    @Override
+    public String toString() {
+        return
+                "id=" + id +
+                ", status=" + status +
+                ", totalPrice=" + totalPrice +
+                ", productsCount=" + productsCount +
+                ", maxItems=" + maxItems;
+    }
 }
