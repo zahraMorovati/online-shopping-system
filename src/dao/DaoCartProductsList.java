@@ -28,9 +28,9 @@ public class DaoCartProductsList extends Dao{
                 "    id_cart INT ," +
                 "    id_user INT ," +
                 "    id_product INT," +
-                "    PRIMARY KEY (id)" +
-                "    FOREIGN KEY (id_cart) REFERENCES cart(id)" +
-                "    FOREIGN KEY (id_user) REFERENCES user(id)" +
+                "    PRIMARY KEY (id)," +
+                "    FOREIGN KEY (id_cart) REFERENCES cart(id)," +
+                "    FOREIGN KEY (id_user) REFERENCES user(id)," +
                 "    FOREIGN KEY (id_product) REFERENCES product(id))");
     }
 
