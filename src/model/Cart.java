@@ -6,23 +6,27 @@ import java.util.List;
 public class Cart {
 
     private int id;
-    private boolean status;
+    private StatusCart status;
     private double totalPrice;
     private int productsCount;
     private final int maxItems=5;
     List<Product> productList =new ArrayList<>();
 
-    public Cart(boolean status, double totalPrice, int productsCount) {
+    public Cart(StatusCart status, double totalPrice, int productsCount) {
         this.status = status;
         this.totalPrice = totalPrice;
         this.productsCount = productsCount;
     }
 
-    public Cart(int id, boolean status, double totalPrice, int numberOfGoods) {
+    public Cart(int id, StatusCart status, double totalPrice, int numberOfGoods) {
         this.id = id;
         this.status = status;
         this.totalPrice = totalPrice;
         this.productsCount = numberOfGoods;
+    }
+
+    public enum StatusCart {
+        FINISHED,ONGOING;
     }
 
     public int getProductsCount() {
@@ -41,18 +45,11 @@ public class Cart {
         this.id = id;
     }
 
-    public boolean isStatus() {
+    public StatusCart getStatus() {
         return status;
     }
 
-    public int getStatus() {
-        if(status)
-            return 1;
-        else return 0;
-    }
-
-
-    public void setStatus(boolean status) {
+    public void setStatus(StatusCart status) {
         this.status = status;
     }
 
