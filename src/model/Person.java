@@ -91,4 +91,14 @@ public class Person {
     public void setNationalCode(int nationalCode) {
         this.nationalCode = nationalCode;
     }
+
+    @Override
+    public String toString() {
+        return
+                "id=" + id +
+                ", name='" + firstName +" " +lastName + '\'' +
+                ", nationalCode=" + nationalCode +
+                ", phoneNUmber='" + phoneNUmber + '\'' +
+                ", birthDate=" + birthDate;
+    }
 }
