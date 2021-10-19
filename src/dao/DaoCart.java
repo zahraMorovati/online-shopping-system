@@ -1,6 +1,7 @@
 package dao;
 
 import model.Cart;
+import model.Product;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -85,6 +86,58 @@ public class DaoCart extends Dao {
         }
         return null;
     }
+
+    public int updateCartStatus(int cartID, Cart.StatusCart statusCart) throws SQLException {
+
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery=String.format("update cart set status='%s' where id='%d'",statusCart.toString(),cartID);
+            ResultSet resultSet = statement.executeQuery(sqlQuery);
+            while (resultSet.next()) {
+               return 1;
+            }
+        } else {
+            return -1;
+        }
+        return -1;
+
+    }
+
+    public int InsertIntoCart(int cartID, Product product) throws SQLException {
+
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery=String.format("update cart set products_count=(products_count)+1 and " +
+                    "total_price=(total_price)+'%f' where id='%d' and products_count>5",product.getPrice(),cartID);
+            ResultSet resultSet = statement.executeQuery(sqlQuery);
+            while (resultSet.next()) {
+                return 1;
+            }
+        } else {
+            return -1;
+        }
+        return -1;
+
+    }
+
+    public int DeleteFromCart(int cartID, Product product) throws SQLException {
+
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery=String.format("update cart set products_count=(products_count)-1 and " +
+                    "total_price=(total_price)-'%f' where id='%d'",product.getPrice(),cartID);
+            ResultSet resultSet = statement.executeQuery(sqlQuery);
+            while (resultSet.next()) {
+                return 1;
+            }
+        } else {
+            return -1;
+        }
+        return -1;
+
+    }
+
+
 
 
 
