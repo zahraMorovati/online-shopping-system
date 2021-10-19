@@ -27,7 +27,7 @@ public class DaoCart extends Dao {
         Statement statement = connection.createStatement();
         statement.executeUpdate("CREATE TABLE cart (" +
                 "    id INT NOT NULL  AUTO_INCREMENT," +
-                "    status boolean DEFAULT false," +
+                "    status  VARCHAR(20)," +
                 "    total_price DOUBLE ," +
                 "    products_count INT," +
                 "    PRIMARY KEY (id))");
@@ -67,11 +67,14 @@ public class DaoCart extends Dao {
         }
     }
 
-    public Cart findCartByID(int cartID) throws SQLException {
+    public Cart findCartByUserID(int userId) throws SQLException {
 
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
-            String sqlQuery=String.format("select * from cart where id='%d'",cartID);
+            String sqlQuery=String.format("SELECT cart.id,cart.status,cart.total_price,cart.products_count\n" +
+                    "from user inner join cart\n" +
+                    "where cart_id=user.cart_id\n" +
+                    "and user.id='%d'",userId);
             ResultSet resultSet = statement.executeQuery(sqlQuery);
             while (resultSet.next()) {
                 int id=resultSet.getInt("id");
@@ -103,12 +106,12 @@ public class DaoCart extends Dao {
 
     }
 
-    public int InsertIntoCart(int cartID, Product product) throws SQLException {
+    public int insertIntoCart(int cartID, Product product,int count) throws SQLException {
 
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
-            String sqlQuery=String.format("update cart set products_count=(products_count)+1 and " +
-                    "total_price=(total_price)+'%f' where id='%d' and products_count>5",product.getPrice(),cartID);
+            String sqlQuery=String.format("update cart set products_count=(products_count)+'%d' and " +
+                    "total_price=(total_price)+'%f' where id='%d' and products_count>5",count,product.getPrice(),cartID);
             ResultSet resultSet = statement.executeQuery(sqlQuery);
             while (resultSet.next()) {
                 return 1;
@@ -120,7 +123,7 @@ public class DaoCart extends Dao {
 
     }
 
-    public int DeleteFromCart(int cartID, Product product) throws SQLException {
+    public int deleteFromCart(int cartID, Product product) throws SQLException {
 
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
@@ -135,6 +138,21 @@ public class DaoCart extends Dao {
         }
         return -1;
 
+    }
+
+    public int getLastIdCart() throws SQLException {
+        int id=0;
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery=String.format("select id from cart");
+            ResultSet resultSet = statement.executeQuery(sqlQuery);
+            while (resultSet.next()) {
+                id=id+1;
+            }
+        } else {
+            return -1;
+        }
+        return id;
     }
 
 
