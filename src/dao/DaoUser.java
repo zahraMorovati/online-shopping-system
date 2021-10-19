@@ -35,6 +35,7 @@ public class DaoUser extends Dao{
                 "    user_name VARCHAR(25)," +
                 "    password VARCHAR(25)," +
                 "    cart_id INT," +
+                "    balance DOUBLE ," +
                 "    PRIMARY KEY (id) ," +
                 "    FOREIGN KEY (cart_id) REFERENCES cart(id))");
     }
@@ -43,10 +44,10 @@ public class DaoUser extends Dao{
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
             String sqlQuery = String.format("INSERT INTO user" +
-                            " (first_name,last_name,nationalCode,phoneNumber,birthDate,email,user_name,password,cart_id) " +
-                            "VALUES ('%s','%s','%d','%s','%s','%s','%s','%s','%d')",
+                            " (first_name,last_name,nationalCode,phoneNumber,birthDate,email,user_name,password,cart_id,balance) " +
+                            "VALUES ('%s','%s','%d','%s','%s','%s','%s','%s','%d','%f')",
                     u.getFirstName(),u.getLastName(),u.getNationalCode(),u.getPhoneNUmber(),u.getBirthDate(),
-                    u.getEmail(),u.getUserName(),u.getPassword(),u.getCartID());
+                    u.getEmail(),u.getUserName(),u.getPassword(),u.getCartID(),u.getBalance());
             int i = statement.executeUpdate(sqlQuery);
             return i;
         } else {
@@ -71,7 +72,8 @@ public class DaoUser extends Dao{
                 int cartId=resultSet.getInt("cart_id");
                 String user_name=resultSet.getString("user_name");
                 String password=resultSet.getString("password");
-                User user=new User(id,firstName,last_name,nationalCode,phoneNumber,birthDate,email,user_name,password,cartId);
+                double balance=resultSet.getDouble("balance");
+                User user=new User(id,firstName,last_name,nationalCode,phoneNumber,birthDate,email,user_name,password,cartId,balance);
             }
             return userList;
         } else {

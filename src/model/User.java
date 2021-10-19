@@ -8,19 +8,24 @@ public class User extends Person {
     private String userName;
     private String password;
     private int cartID;
+    private double balance;
 
-    public User(int id, String firstName, String lastName, int nationalCode, String phoneNUmber, Date birthDate, String email, String userName, String password, int cartID) {
+    public User(int id, String firstName, String lastName, int nationalCode, String phoneNUmber,
+                Date birthDate, String email, String userName, String password, int cartID,double balance) {
         super(id, firstName, lastName, nationalCode, phoneNUmber, birthDate, email);
         this.userName = userName;
         this.password = password;
         this.cartID = cartID;
+        this.balance=balance;
     }
 
-    public User(String firstName, String lastName, int nationalCode, String phoneNUmber, Date birthDate, String email, String userName, String password, int cartID) {
+    public User(String firstName, String lastName, int nationalCode, String phoneNUmber, Date birthDate,
+                String email, String userName, String password, int cartID,double balance) {
         super(firstName, lastName, nationalCode, phoneNUmber, birthDate, email);
         this.userName = userName;
         this.password = password;
         this.cartID = cartID;
+        this.balance=balance;
     }
 
     public User(String firstName, String lastName, int nationalCode, String phoneNUmber, Date birthDate,
@@ -30,6 +35,14 @@ public class User extends Person {
         this.cart = cart;
         this.userName = userName;
         this.password = password;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 
     public Cart getCart() {
