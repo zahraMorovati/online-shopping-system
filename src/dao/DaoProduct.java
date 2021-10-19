@@ -28,7 +28,7 @@ public class DaoProduct extends Dao{
         statement.executeUpdate("CREATE TABLE product (" +
                 "    id INT NOT NULL  AUTO_INCREMENT," +
                 "    name VARCHAR(25)," +
-                "    group VARCHAR(25)," +
+                "    group_product VARCHAR(25)," +
                 "    type VARCHAR(25)," +
                 "    price Double ," +
                 "    count INT," +
@@ -38,8 +38,8 @@ public class DaoProduct extends Dao{
    public int save(Product p) throws SQLException {
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
-            String sqlQuery = String.format("INSERT INTO good" +
-                            " (name,group,type,price,count) " +
+            String sqlQuery = String.format("INSERT INTO product" +
+                            " (name,group_product,type,price,count) " +
                             "VALUES ('%s','%s','%s','%f','%d')",
                      p.getName(),p.getProductGroup().toString(),p.getProductType().toString(),
                     p.getPrice(),p.getCount());
@@ -50,6 +50,7 @@ public class DaoProduct extends Dao{
         }
     }
 
+
     public List<Product> findAllProducts() throws SQLException {
 
         if (getConnection() != null) {
@@ -59,7 +60,7 @@ public class DaoProduct extends Dao{
             while (resultSet.next()) {
                 int id=resultSet.getInt("id");
                 String name=resultSet.getString("name");
-                ProductGroup group= ProductGroup.valueOf(resultSet.getString("group"));
+                ProductGroup group= ProductGroup.valueOf(resultSet.getString("group_product"));
                 ProductGroup.ProductType type= ProductGroup.ProductType.valueOf(resultSet.getString("type"));
                 double price=resultSet.getDouble("price");
                 int count=resultSet.getInt("count");
