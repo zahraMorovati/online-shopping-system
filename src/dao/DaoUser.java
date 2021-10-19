@@ -81,5 +81,20 @@ public class DaoUser extends Dao{
         }
     }
 
+    public boolean findUserById(int userID) throws SQLException {
+        if (getConnection() != null) {
+
+            Statement statement = getConnection().createStatement();
+            String sqlQuery=String.format("select * from user where id='%d'",userID);
+            ResultSet resultSet = statement.executeQuery(sqlQuery);
+            while (resultSet.next()) {
+               return true;
+            }
+            return false;
+        } else {
+            return false;
+        }
+    }
+
 
 }
