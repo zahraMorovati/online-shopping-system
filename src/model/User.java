@@ -7,14 +7,20 @@ public class User extends Person {
     private Cart cart;
     private String userName;
     private String password;
+    private int cartID;
 
-    public User(int id, String firstName, String lastName, int nationalCode, String phoneNUmber, Date birthDate,
-                String email, Cart cart, String userName, String password) {
-
+    public User(int id, String firstName, String lastName, int nationalCode, String phoneNUmber, Date birthDate, String email, String userName, String password, int cartID) {
         super(id, firstName, lastName, nationalCode, phoneNUmber, birthDate, email);
-        this.cart = cart;
         this.userName = userName;
         this.password = password;
+        this.cartID = cartID;
+    }
+
+    public User(String firstName, String lastName, int nationalCode, String phoneNUmber, Date birthDate, String email, String userName, String password, int cartID) {
+        super(firstName, lastName, nationalCode, phoneNUmber, birthDate, email);
+        this.userName = userName;
+        this.password = password;
+        this.cartID = cartID;
     }
 
     public User(String firstName, String lastName, int nationalCode, String phoneNUmber, Date birthDate,
@@ -48,5 +54,13 @@ public class User extends Person {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getCartID() {
+        return cartID;
+    }
+
+    public void setCartID(int cartID) {
+        this.cartID = cartID;
     }
 }
