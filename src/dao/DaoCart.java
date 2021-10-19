@@ -1,5 +1,7 @@
 package dao;
 
+import model.Cart;
+
 import java.sql.*;
 
 public class DaoCart extends Dao {
@@ -25,10 +27,24 @@ public class DaoCart extends Dao {
                 "    status boolean DEFAULT false," +
                 "    total_price DOUBLE ," +
                 "    products_count INT," +
-                "    id_user INT," +
                 "    PRIMARY KEY (id) ," +
                 "    FOREIGN KEY (id_user) REFERENCES user(id))");
     }
+
+    public int save(Cart c) throws SQLException {
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery = String.format("INSERT INTO cart" +
+                            " (id_user,status,total_price,products_count) " +
+                            "VALUES ('%d','%d','%f','%d')",
+                    c.getUser().getId(),c.getStatus(),c.getTotalPrice(),c.getProductsCount());
+            int i = statement.executeUpdate(sqlQuery);
+            return i;
+        } else {
+            return 0;
+        }
+    }
+
 
 
 }
