@@ -9,7 +9,7 @@ public class Cart {
     private User user;
     private boolean status;
     private double totalPrice;
-    private int goodsCount;
+    private int productsCount;
     private final int maxItems=5;
     List<Product> productList =new ArrayList<>();
 
@@ -18,16 +18,16 @@ public class Cart {
         this.user = user;
         this.status = status;
         this.totalPrice = totalPrice;
-        this.goodsCount = numberOfGoods;
+        this.productsCount = numberOfGoods;
         this.productList = productList;
     }
 
-    public int getGoodsCount() {
-        return goodsCount;
+    public int getProductsCount() {
+        return productsCount;
     }
 
-    public void setGoodsCount(int goodsCount) {
-        this.goodsCount = goodsCount;
+    public void setProductsCount(int productsCount) {
+        this.productsCount = productsCount;
     }
 
     public int getId() {
@@ -49,6 +49,13 @@ public class Cart {
     public boolean isStatus() {
         return status;
     }
+
+    public int getStatus() {
+        if(status)
+            return 1;
+        else return 0;
+    }
+
 
     public void setStatus(boolean status) {
         this.status = status;
