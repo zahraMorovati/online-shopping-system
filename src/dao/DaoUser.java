@@ -1,8 +1,13 @@
 package dao;
 
+import model.Product;
 import model.User;
+import model.enumation.ProductGroup;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class DaoUser extends Dao{
 
@@ -50,4 +55,31 @@ public class DaoUser extends Dao{
             return 0;
         }
     }
+
+    public List<User> findAllUsers() throws SQLException {
+
+        if (getConnection() != null) {
+            List<User> userList = new ArrayList<>();
+            Statement statement = getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("select * from user");
+            while (resultSet.next()) {
+                int id=resultSet.getInt("id");
+                String firstName=resultSet.getString("first_name");
+                String last_name=resultSet.getString("last_name");
+                int nationalCode=resultSet.getInt("nationalCode");
+                String phoneNumber=resultSet.getString("phoneNumber");
+                Date birthDate=resultSet.getDate("birthDate");
+                String email=resultSet.getString("email");
+                int cart_id=resultSet.getInt("cart_id");
+                String user_name=resultSet.getString("user_name");
+                String password=resultSet.getString("password");
+                //TODO
+            }
+            return userList;
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+
 }
