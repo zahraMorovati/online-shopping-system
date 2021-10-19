@@ -1,8 +1,6 @@
 package dao;
 
-import model.Product;
 import model.User;
-import model.enumation.ProductGroup;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -34,9 +32,9 @@ public class DaoUser extends Dao{
                 "    phoneNumber VARCHAR(11)," +
                 "    birthDate Date," +
                 "    email VARCHAR(25)," +
-                "    cart_id INT," +
                 "    user_name VARCHAR(25)," +
                 "    password VARCHAR(25)," +
+                "    cart_id INT," +
                 "    PRIMARY KEY (id) ," +
                 "    FOREIGN KEY (cart_id) REFERENCES cart(id))");
     }
@@ -45,10 +43,10 @@ public class DaoUser extends Dao{
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
             String sqlQuery = String.format("INSERT INTO user" +
-                            " (first_name,last_name,nationalCode,phoneNumber,birthDate,email,cart_id,user_name,password) " +
-                            "VALUES ('%d','%s','%s','%d','%s','%s','%s','%d','%s','%s','%d')",
+                            " (first_name,last_name,nationalCode,phoneNumber,birthDate,email,user_name,password,cart_id) " +
+                            "VALUES ('%s','%s','%d','%s','%s','%s','%s','%s','%d')",
                     u.getFirstName(),u.getLastName(),u.getNationalCode(),u.getPhoneNUmber(),u.getBirthDate(),
-                    u.getEmail(),u.getCart().getId(),u.getUserName(),u.getPassword());
+                    u.getEmail(),u.getUserName(),u.getPassword(),u.getCartID());
             int i = statement.executeUpdate(sqlQuery);
             return i;
         } else {
@@ -70,10 +68,10 @@ public class DaoUser extends Dao{
                 String phoneNumber=resultSet.getString("phoneNumber");
                 Date birthDate=resultSet.getDate("birthDate");
                 String email=resultSet.getString("email");
-                int cart_id=resultSet.getInt("cart_id");
+                int cartId=resultSet.getInt("cart_id");
                 String user_name=resultSet.getString("user_name");
                 String password=resultSet.getString("password");
-                //TODO
+                User user=new User(id,firstName,last_name,nationalCode,phoneNumber,birthDate,email,user_name,password,cartId);
             }
             return userList;
         } else {
