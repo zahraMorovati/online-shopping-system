@@ -57,20 +57,42 @@ public class DaoProduct extends Dao{
             List<Product> productList = new ArrayList<>();
             Statement statement = getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("select * from product");
-            while (resultSet.next()) {
-                int id=resultSet.getInt("id");
-                String name=resultSet.getString("name");
-                ProductGroup group= ProductGroup.valueOf(resultSet.getString("group_product"));
-                ProductGroup.ProductType type= ProductGroup.ProductType.valueOf(resultSet.getString("type"));
-                double price=resultSet.getDouble("price");
-                int count=resultSet.getInt("count");
-                Product product=new Product(id,name,group,type,price,count);
-                productList.add(product);
-            }
-            return productList;
+            return getProducts(productList, resultSet);
         } else {
             return Collections.emptyList();
         }
+    }
+
+    public List<Product> findCartProducts(int userID) throws SQLException {
+
+        if (getConnection() != null) {
+            List<Product> productList = new ArrayList<>();
+            Statement statement = getConnection().createStatement();
+            String sqlQuery=String.format("SELECT product.id ,product.name,product.group_product,product.type," +
+                    "product.price,product.count\n" +
+                    " FROM ( product inner join user inner join cartproductslist )\n" +
+                    "where user.id=cartproductslist.id_user and\n" +
+                    "cartproductslist.id_cart=user.cart_id and\n" +
+                    "product.id=cartproductslist.id_product and user.id='%d'",userID);
+            ResultSet resultSet = statement.executeQuery(sqlQuery);
+            return getProducts(productList, resultSet);
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    private List<Product> getProducts(List<Product> productList, ResultSet resultSet) throws SQLException {
+        while (resultSet.next()) {
+            int id=resultSet.getInt("id");
+            String name=resultSet.getString("name");
+            ProductGroup group= ProductGroup.valueOf(resultSet.getString("group_product"));
+            ProductGroup.ProductType type= ProductGroup.ProductType.valueOf(resultSet.getString("type"));
+            double price=resultSet.getDouble("price");
+            int count=resultSet.getInt("count");
+            Product product=new Product(id,name,group,type,price,count);
+            productList.add(product);
+        }
+        return productList;
     }
 
 
