@@ -1,8 +1,6 @@
 package dao;
 
 import model.Cart;
-import model.Product;
-import model.enumation.ProductGroup;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -39,8 +37,8 @@ public class DaoCart extends Dao {
             Statement statement = getConnection().createStatement();
             String sqlQuery = String.format("INSERT INTO cart" +
                             " (status,total_price,products_count) " +
-                            "VALUES ('%d','%f','%d')",
-                    c.getStatus(),c.getTotalPrice(),c.getProductsCount());
+                            "VALUES ('%s','%f','%d')",
+                    c.getStatus().toString(),c.getTotalPrice(),c.getProductsCount());
             int i = statement.executeUpdate(sqlQuery);
             return i;
         } else {
@@ -56,7 +54,7 @@ public class DaoCart extends Dao {
             ResultSet resultSet = statement.executeQuery("select * from cart");
             while (resultSet.next()) {
                 int id=resultSet.getInt("id");
-                boolean status=resultSet.getBoolean("status");
+                Cart.StatusCart status= Cart.StatusCart.valueOf(resultSet.getString("status"));
                 double totalPrice=resultSet.getDouble("total_price");
                 int productsCount=resultSet.getInt("products_count");
                 Cart cart=new Cart(id,status,totalPrice,productsCount);
@@ -76,7 +74,7 @@ public class DaoCart extends Dao {
             ResultSet resultSet = statement.executeQuery(sqlQuery);
             while (resultSet.next()) {
                 int id=resultSet.getInt("id");
-                boolean status=resultSet.getBoolean("status");
+                Cart.StatusCart status= Cart.StatusCart.valueOf(resultSet.getString("status"));
                 double totalPrice=resultSet.getDouble("total_price");
                 int productsCount=resultSet.getInt("products_count");
                 Cart cart=new Cart(id,status,totalPrice,productsCount);
