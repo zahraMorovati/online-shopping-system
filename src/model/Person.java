@@ -7,13 +7,13 @@ public class Person {
     private int id;
     private String firstName;
     private String lastName;
-    private long nationalCode;
+    private int nationalCode;
     private String phoneNUmber;
     private Date birthDate;
     private String email;
 
 
-    public Person(int id, String firstName, String lastName, long nationalCode, String phoneNUmber,
+    public Person(int id, String firstName, String lastName, int nationalCode, String phoneNUmber,
                   Date birthDate, String email) {
 
         this.id = id;
@@ -25,7 +25,7 @@ public class Person {
         this.email = email;
     }
 
-    public Person(String firstName, String lastName, long nationalCode, String phoneNUmber,
+    public Person(String firstName, String lastName, int nationalCode, String phoneNUmber,
                   Date birthDate, String email) {
 
         this.firstName = firstName;
@@ -88,7 +88,7 @@ public class Person {
         return nationalCode;
     }
 
-    public void setNationalCode(long nationalCode) {
+    public void setNationalCode(int nationalCode) {
         this.nationalCode = nationalCode;
     }
 }

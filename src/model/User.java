@@ -8,7 +8,7 @@ public class User extends Person {
     private String userName;
     private String password;
 
-    public User(int id, String firstName, String lastName, long nationalCode, String phoneNUmber, Date birthDate,
+    public User(int id, String firstName, String lastName, int nationalCode, String phoneNUmber, Date birthDate,
                 String email, Cart cart, String userName, String password) {
 
         super(id, firstName, lastName, nationalCode, phoneNUmber, birthDate, email);
@@ -17,7 +17,7 @@ public class User extends Person {
         this.password = password;
     }
 
-    public User(String firstName, String lastName, long nationalCode, String phoneNUmber, Date birthDate,
+    public User(String firstName, String lastName, int nationalCode, String phoneNUmber, Date birthDate,
                 String email, Cart cart, String userName, String password) {
 
         super(firstName, lastName, nationalCode, phoneNUmber, birthDate, email);
