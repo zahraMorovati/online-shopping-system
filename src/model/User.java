@@ -20,11 +20,10 @@ public class User extends Person {
     }
 
     public User(String firstName, String lastName, int nationalCode, String phoneNUmber, Date birthDate,
-                String email, String userName, String password, int cartID,double balance) {
+                String email, String userName, String password,double balance) {
         super(firstName, lastName, nationalCode, phoneNUmber, birthDate, email);
         this.userName = userName;
         this.password = password;
-        this.cartID = cartID;
         this.balance=balance;
     }
 
@@ -75,5 +74,13 @@ public class User extends Person {
 
     public void setCartID(int cartID) {
         this.cartID = cartID;
+    }
+
+    @Override
+    public String toString() {
+        return  super.toString()+"\n"+
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", balance=" + balance;
     }
 }
