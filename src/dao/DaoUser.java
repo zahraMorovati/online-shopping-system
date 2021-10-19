@@ -1,5 +1,7 @@
 package dao;
 
+import model.User;
+
 import java.sql.*;
 
 public class DaoUser extends Dao{
@@ -30,8 +32,22 @@ public class DaoUser extends Dao{
                 "    cart_id INT," +
                 "    user_name VARCHAR(25)," +
                 "    password VARCHAR(25)," +
-                "    status boolean DEFAULT false," +
                 "    PRIMARY KEY (id) ," +
                 "    FOREIGN KEY (cart_id) REFERENCES cart(id))");
+    }
+
+    public int save(User u) throws SQLException {
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery = String.format("INSERT INTO user" +
+                            " (first_name,last_name,nationalCode,phoneNumber,birthDate,email,cart_id,user_name,password) " +
+                            "VALUES ('%d','%s','%s','%d','%s','%s','%s','%d','%s','%s','%d')",
+                    u.getFirstName(),u.getLastName(),u.getNationalCode(),u.getPhoneNUmber(),u.getBirthDate(),
+                    u.getEmail(),u.getCart().getId(),u.getUserName(),u.getPassword());
+            int i = statement.executeUpdate(sqlQuery);
+            return i;
+        } else {
+            return 0;
+        }
     }
 }
