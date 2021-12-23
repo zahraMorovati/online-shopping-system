@@ -1,11 +1,12 @@
-package validData;
+package view;
 
-import myDate.MyDate;
+import model.enumation.ProductGroup;
+import model.myDate.MyDate;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-import static validData.ConsoleColors.*;
+import static model.enumation.ConsoleColors.*;
 
 
 public class GetValidData {
@@ -21,6 +22,12 @@ public class GetValidData {
             System.out.println(RED + "invalid input!" + RESET);
             return getValidName(message);
         }
+    }
+
+    public static String getValidString(String message){
+        System.out.print(BLUE_BRIGHT + message + RESET);
+        String str = input.next();
+        return str;
     }
 
     public static MyDate getValidBirthDate() {
@@ -85,8 +92,6 @@ public class GetValidData {
         }
     }
 
-
-
     public static int getValidChoice(String message, int maxChoice) {
         int number = getValidInt(message);
         for (int i = 1; i < maxChoice + 1; i++) {
@@ -113,6 +118,46 @@ public class GetValidData {
         }
 
     }
+
+    public static ProductGroup getValidProductGroup(){
+        int choice = GetValidData.getValidChoice("1)ELECTRONICS 2)SHOE 3)READABLE \nenter your choice: ",3);
+        switch (choice){
+            case 1: return ProductGroup.ELECTRONICS;
+            case 2: return ProductGroup.SHOE;
+            case 3: return ProductGroup.READABLE;
+            default: return null;
+        }
+    }
+
+    public static ProductGroup.ProductType getValidProductType (ProductGroup productGroup){
+        int choice=0;
+        switch (productGroup){
+            case READABLE:{
+                choice=GetValidData.getValidChoice("1)book 2)news paper ? ",2);
+                if(choice==1)
+                    return ProductGroup.ProductType.BOOK;
+                if(choice==2)
+                    return ProductGroup.ProductType.NEWSPAPER;
+            }
+            case SHOE:{
+                choice=GetValidData.getValidChoice("1)sport shoe 2)formal shoe ? ",2);
+                if(choice==1)
+                    return ProductGroup.ProductType.SPORT_SHOE;
+                if(choice==2)
+                    return ProductGroup.ProductType.FORMAL_SHOE;
+            }
+            case ELECTRONICS:{
+                choice=GetValidData.getValidChoice("1)tv 2)radio ? ",2);
+                if(choice==1)
+                    return ProductGroup.ProductType.TV;
+                if(choice==2)
+                    return ProductGroup.ProductType.RADIO;
+            }
+        }
+        return null;
+    }
+
+
 
 
 

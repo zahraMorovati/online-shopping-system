@@ -1,85 +1,73 @@
 package model;
 
+import lombok.Data;
+import model.enumation.StatusCart;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
+@Entity
+@Data
 public class Cart {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Enumerated(EnumType.STRING)
     private StatusCart status;
+    @Column(name = "total_price")
     private double totalPrice;
+    @Column(name = "products_count")
     private int productsCount;
-    private final int maxItems=5;
+    @ManyToMany(cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
     List<Product> productList =new ArrayList<>();
-
-    public Cart(StatusCart status, double totalPrice, int productsCount) {
-        this.status = status;
-        this.totalPrice = totalPrice;
-        this.productsCount = productsCount;
-    }
-
-    public Cart(int id, StatusCart status, double totalPrice, int numberOfGoods) {
-        this.id = id;
-        this.status = status;
-        this.totalPrice = totalPrice;
-        this.productsCount = numberOfGoods;
-    }
-
-    public enum StatusCart {
-        FINISHED,ONGOING;
-    }
-
-    public int getProductsCount() {
-        return productsCount;
-    }
-
-    public void setProductsCount(int productsCount) {
-        this.productsCount = productsCount;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public StatusCart getStatus() {
-        return status;
-    }
-
-    public void setStatus(StatusCart status) {
-        this.status = status;
-    }
-
-    public double getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(double totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
-    public int getMaxItems() {
-        return maxItems;
-    }
-
-    public List<Product> getGoodList() {
-        return productList;
-    }
-
-    public void setGoodList(List<Product> productList) {
-        this.productList = productList;
-    }
-
     @Override
     public String toString() {
         return
                 "id=" + id +
                 ", status=" + status +
                 ", totalPrice=" + totalPrice +
-                ", productsCount=" + productsCount +
-                ", maxItems=" + maxItems;
+                ", productsCount=" + productsCount ;
+    }
+
+
+    public static final class CartBuilder {
+        private Cart cart;
+
+        private CartBuilder() {
+            cart = new Cart();
+        }
+
+        public static CartBuilder aCart() {
+            return new CartBuilder();
+        }
+
+        public CartBuilder setId(int id) {
+            cart.setId(id);
+            return this;
+        }
+
+        public CartBuilder setStatus(StatusCart status) {
+            cart.setStatus(status);
+            return this;
+        }
+
+        public CartBuilder setTotalPrice(double totalPrice) {
+            cart.setTotalPrice(totalPrice);
+            return this;
+        }
+
+        public CartBuilder setProductsCount(int productsCount) {
+            cart.setProductsCount(productsCount);
+            return this;
+        }
+
+        public CartBuilder setProductList(List<Product> productList) {
+            cart.setProductList(productList);
+            return this;
+        }
+
+        public Cart build() {
+            return cart;
+        }
     }
 }

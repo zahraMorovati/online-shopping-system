@@ -1,87 +1,24 @@
 package model;
 
+import lombok.Data;
 import model.enumation.ProductGroup;
 
+import javax.persistence.*;
+
+@Entity
+@Data
 public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
+    @Column(name = "product_group")
     private ProductGroup productGroup;
+    @Column(name ="product_Type" )
     private ProductGroup.ProductType productType;
     private double price;
     private int count;
 
-    public Product(int id, String name, ProductGroup productGroup, ProductGroup.ProductType productType, double price, int count) {
-        this.id = id;
-        this.name = name;
-        this.productGroup = productGroup;
-        this.productType = productType;
-        this.price = price;
-        this.count = count;
-    }
-
-    public Product(String name, ProductGroup productGroup, ProductGroup.ProductType productType, double price, int count) {
-        this.name = name;
-        this.productGroup = productGroup;
-        this.productType = productType;
-        this.price = price;
-        this.count = count;
-    }
-
-    public ProductGroup getProductGroup() {
-        return productGroup;
-    }
-
-    public void setProductGroup(ProductGroup productGroup) {
-        this.productGroup = productGroup;
-    }
-
-    public ProductGroup.ProductType getProductType() {
-        return productType;
-    }
-
-    public void setProductType(ProductGroup.ProductType productType) {
-        this.productType = productType;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public ProductGroup getGoodType() {
-        return productGroup;
-    }
-
-    public void setGoodType(ProductGroup productGroup) {
-        this.productGroup = productGroup;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
 
     @Override
     public String toString() {
@@ -92,5 +29,56 @@ public class Product {
                 ", productType=" + productType +
                 ", price=" + price +
                 ", count=" + count;
+    }
+
+
+    public static final class ProductBuilder {
+        private Product product;
+
+        private ProductBuilder() {
+            product = new Product();
+        }
+
+        public static ProductBuilder aProduct() {
+            return new ProductBuilder();
+        }
+
+        public ProductBuilder setId(int id) {
+            product.setId(id);
+            return this;
+        }
+
+        public ProductBuilder setName(String name) {
+            product.setName(name);
+            return this;
+        }
+
+        public ProductBuilder setProductGroup(ProductGroup productGroup) {
+            product.setProductGroup(productGroup);
+            return this;
+        }
+
+        public ProductBuilder setProductType(ProductGroup.ProductType productType) {
+            product.setProductType(productType);
+            return this;
+        }
+
+        public ProductBuilder setPrice(double price) {
+            product.setPrice(price);
+            return this;
+        }
+
+        public ProductBuilder setCount(int count) {
+            product.setCount(count);
+            return this;
+        }
+
+        public ProductBuilder but() {
+            return aProduct().setId(product.getId()).setName(product.getName()).setProductGroup(product.getProductGroup()).setProductType(product.getProductType()).setPrice(product.getPrice()).setCount(product.getCount());
+        }
+
+        public Product build() {
+            return product;
+        }
     }
 }

@@ -27,9 +27,7 @@ public enum ProductGroup {
                     return good;
                 }
             }
-
             return null;
-
         }
 
 

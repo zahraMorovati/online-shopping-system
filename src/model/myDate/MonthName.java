@@ -1,4 +1,4 @@
-package myDate;
+package model.myDate;
 
 public enum MonthName {
     JANUARY(31, 1),

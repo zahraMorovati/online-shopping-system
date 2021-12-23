@@ -1,99 +1,203 @@
 package dao;
 
+import model.Cart;
+import model.Product;
 import model.User;
+import model.enumation.StatusCart;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+import service.ProductService;
+import util.HibernateUtil;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.IntStream;
 
-public class DaoUser extends Dao{
+import static model.enumation.StatusCart.FINISHED;
 
-    public DaoUser() throws ClassNotFoundException, SQLException {
+public class DaoUser extends Dao {
 
-        super();
-        if (getConnection() != null) {
-            DatabaseMetaData metaData = getConnection().getMetaData();
-            ResultSet tables = metaData.getTables(null, null, "user", null);
-            if (!tables.next()) {
-                createUserTable();
-            }
-        }
+    private static SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+    static Cart newCart = Cart.CartBuilder.aCart().setStatus(StatusCart.ONGOING).build();
+    private static final int maxSizeCart = 5;
+
+    /*
+     * for save a user
+     * first we should add new cart then save the user
+     * */
+    public void save(User user) {
+
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        user.setCart(newCart);
+        session.save(user);
+        transaction.commit();
+        session.close();
     }
 
-    private void createUserTable() throws SQLException {
-        Connection connection = getConnection();
-        Statement statement = connection.createStatement();
-        statement.executeUpdate("CREATE TABLE user (" +
-                "    id INT NOT NULL  AUTO_INCREMENT," +
-                "    first_name VARCHAR(25)," +
-                "    last_name VARCHAR(25)," +
-                "    nationalCode INT," +
-                "    phoneNumber VARCHAR(11)," +
-                "    birthDate Date," +
-                "    email VARCHAR(25)," +
-                "    user_name VARCHAR(25)," +
-                "    password VARCHAR(25)," +
-                "    cart_id INT," +
-                "    balance DOUBLE ," +
-                "    PRIMARY KEY (id) ," +
-                "    FOREIGN KEY (cart_id) REFERENCES cart(id))");
+
+    /*
+     * for confirm cart
+     * 1- check balance is enough
+     * 2- update balace
+     * 3- update status cart
+     * 4- add a new cart to user
+     * */
+
+    public void confirmCart(int userId) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        User user = session.get(User.class, userId);
+
+        if (user != null && user.getCart() != null) {
+            if (user.getCart().getProductsCount() != 0) {
+                double newBalance = user.getBalance() - user.getCart().getTotalPrice();
+                if (newBalance > 0) {
+                    Query<Cart> cartQuery = session.createQuery("update Cart c set c.status=:status where c.id=:id");
+                    cartQuery.setParameter("status", FINISHED);
+                    cartQuery.setParameter("id", user.getCart().getId());
+                    cartQuery.executeUpdate();
+                    user.setCart(newCart);
+                    user.setBalance(newBalance);
+                    session.update(user);
+                } else throw new RuntimeException("balance is not enough!");
+            } else throw new RuntimeException("your cart is empty you can't confirm it!");
+        } else throw new RuntimeException("cannot find user!");
+
+        transaction.commit();
+        session.close();
     }
 
-    public int save(User u) throws SQLException {
-        if (getConnection() != null) {
-            Statement statement = getConnection().createStatement();
-            String sqlQuery = String.format("INSERT INTO user" +
-                            " (first_name,last_name,nationalCode,phoneNumber,birthDate,email,user_name,password,cart_id,balance) " +
-                            "VALUES ('%s','%s','%d','%s','%s','%s','%s','%s','%d','%f')",
-                    u.getFirstName(),u.getLastName(),u.getNationalCode(),u.getPhoneNUmber(),u.getBirthDate(),
-                    u.getEmail(),u.getUserName(),u.getPassword(),u.getCartID(),u.getBalance());
-            int i = statement.executeUpdate(sqlQuery);
-            return i;
-        } else {
-            return 0;
-        }
+
+    public List<User> findById(int id) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        Query<User> query = session.createQuery("from User u where u.id=:id");
+        query.setParameter("id", id);
+        List<User> results = query.getResultList();
+        transaction.commit();
+        session.close();
+        return results;
     }
 
-    public List<User> findAllUsers() throws SQLException {
 
-        if (getConnection() != null) {
-            List<User> userList = new ArrayList<>();
-            Statement statement = getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from user");
-            while (resultSet.next()) {
-                int id=resultSet.getInt("id");
-                String firstName=resultSet.getString("first_name");
-                String last_name=resultSet.getString("last_name");
-                int nationalCode=resultSet.getInt("nationalCode");
-                String phoneNumber=resultSet.getString("phoneNumber");
-                Date birthDate=resultSet.getDate("birthDate");
-                String email=resultSet.getString("email");
-                int cartId=resultSet.getInt("cart_id");
-                String user_name=resultSet.getString("user_name");
-                String password=resultSet.getString("password");
-                double balance=resultSet.getDouble("balance");
-                User user=new User(id,firstName,last_name,nationalCode,phoneNumber,birthDate,email,user_name,password,cartId,balance);
-            }
-            return userList;
-        } else {
-            return Collections.emptyList();
-        }
+    private User getUser(ResultSet resultSet) throws SQLException {
+        int id = resultSet.getInt("id");
+        String firstName = resultSet.getString("first_name");
+        String lastName = resultSet.getString("last_name");
+        int nationalCode = resultSet.getInt("nationalCode");
+        String phoneNumber = resultSet.getString("phoneNumber");
+        Date birthDate = resultSet.getDate("birthDate");
+        String email = resultSet.getString("email");
+        int cartId = resultSet.getInt("cart_id");
+        String userName = resultSet.getString("user_name");
+        String password = resultSet.getString("password");
+        double balance = resultSet.getDouble("balance");
+        User user = User.UserBuilder.anUser()
+                .setId(id)
+                .setFirstName(firstName)
+                .setLastName(lastName)
+                .setNationalCode(nationalCode)
+                .setPhoneNumber(phoneNumber)
+                .setBirthDate(birthDate)
+                .setEmail(email)
+                .setUserName(userName)
+                .setPassword(password)
+                .build();
+        return user;
     }
 
-    public boolean findUserById(int userID) throws SQLException {
-        if (getConnection() != null) {
 
-            Statement statement = getConnection().createStatement();
-            String sqlQuery=String.format("select * from user where id='%d'",userID);
-            ResultSet resultSet = statement.executeQuery(sqlQuery);
-            while (resultSet.next()) {
-               return true;
-            }
+    public User findUserByUserNameAndPassword(String userName, String password) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        Query<User> query = session.createQuery("from User u where u.userName=:username and u.password=:password");
+        query.setParameter("username", userName);
+        query.setParameter("password", password);
+        List<User> results = query.getResultList();
+        transaction.commit();
+        session.close();
+        return results.get(0);
+    }
+
+    public boolean checkDuplicatedUser(String userName) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        Query<User> query = session.createQuery("from User u where u.userName=:username");
+        query.setParameter("username", userName);
+        List<User> results = query.getResultList();
+        transaction.commit();
+        session.close();
+        if (results.isEmpty()) {
             return false;
-        } else {
-            return false;
-        }
+        } else return true;
+    }
+
+
+    /*
+     * 1- check cart product count < 5
+     * 2- add product to cart
+     * 3- product count cart -> update
+     * 4- total price cart -> update
+     *
+     * */
+    public void addToCart(int userId, Product product) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        User user = session.get(User.class, userId);
+        Cart cart = session.get(Cart.class, user.getCart().getId());
+        if (user != null && cart != null) {
+            if (cart.getProductsCount() < maxSizeCart) {
+                if (product.getCount() > 0) {
+                    int index = findIndexProductInCart(product, cart);
+                    if (index == -1) {
+                        cart.getProductList().add(product);
+                    }
+                    updateCart(session, cart, cart.getProductsCount() + 1, cart.getTotalPrice() + product.getPrice());
+                    transaction.commit();
+                    session.close();
+                } else throw new RuntimeException("product count is not enough!");
+            } else throw new RuntimeException("the cart reached max size!");
+        } else throw new RuntimeException("cannot find user!");
+
+    }
+
+
+    public void removeFromCart(int userId, Product product) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        User user = session.get(User.class, userId);
+        Cart cart = session.get(Cart.class, user.getCart().getId());
+        if (user != null && cart != null) {
+            int index = findIndexProductInCart(product, cart);
+            if (index != -1) {
+                if (cart.getProductsCount() == 1) {
+                    cart.getProductList().remove(index);
+                }
+                updateCart(session, cart, cart.getProductsCount() - 1, cart.getTotalPrice() - product.getPrice());
+            }
+            transaction.commit();
+            session.close();
+        } else throw new RuntimeException("cannot find user!");
+
+    }
+
+    private void updateCart(Session session, Cart cart, int i, double v) {
+        int newProductCount = i;
+        double totalPrice = v;
+        cart.setProductsCount(newProductCount);
+        cart.setTotalPrice(totalPrice);
+        session.update(cart);
+    }
+
+    private int findIndexProductInCart(Product product, Cart cart) {
+        return IntStream.range(0, cart.getProductList().size())
+                .filter(i -> cart.getProductList().get(i).getId() == product.getId())
+                .findFirst().orElse(-1);
     }
 
 
