@@ -1,4 +1,4 @@
-package myDate;
+package model.myDate;
 
 public class MyDate {
 

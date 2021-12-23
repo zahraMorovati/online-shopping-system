@@ -1,4 +1,4 @@
-package validData;
+package model.enumation;
 
 public class ConsoleColors {
     // Reset
